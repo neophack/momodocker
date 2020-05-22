@@ -25,7 +25,7 @@ RUN  /root/apt_install_arm.sh && rm /var/lib/apt/* -R
 
 COPY script/init_rootfs_arm64.sh /root/
 COPY arm64.conf /root/
-RUN  /root/init_rootfs_arm64.sh /root/rootfs /root/arm64.conf && rm /var/lib/apt/* -R
+RUN  /root/init_rootfs_arm64.sh /root/rootfs /root/arm64.conf 
 
 # 構築した RootFS を Jetson Nano のファイルで上書きする
 
