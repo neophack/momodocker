@@ -1,6 +1,15 @@
 # syntax = docker/dockerfile:1.1.1-experimental
 FROM ubuntu:18.04
 
+ENV MOMO_VERSION 2020.6
+ENV WEBRTC_BUILD_VERSION 84.4147.0.0
+ENV BOOST_VERSION 1.73.0
+ENV JSON_VERSION 3.7.3
+ENV CLI11_VERSION 1.9.0
+ENV SDL2_VERSION 2.0.12
+ENV CMAKE_VERSION 3.17.2
+
+
 ARG PACKAGE_NAME
 
 LABEL jp.shiguredo.momo=$PACKAGE_NAME
@@ -10,19 +19,17 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 # パッケージのインストール
 
 COPY script/apt_install_arm.sh /root/
-RUN --mount=type=cache,id=$PACKAGE_NAME,target=/var/cache/apt --mount=type=cache,id=$PACKAGE_NAME,target=/var/lib/apt \
-  /root/apt_install_arm.sh
+RUN  /root/apt_install_arm.sh && rm /var/cache/apt/* -R && rm /var/lib/apt/* -R
 
 # RootFS の構築
 
 COPY script/init_rootfs_armhf.sh /root/
 COPY rpi-raspbian.conf /root/
-RUN --mount=type=cache,id=$PACKAGE_NAME,target=/var/cache/apt --mount=type=cache,id=$PACKAGE_NAME,target=/var/lib/apt \
-  /root/init_rootfs_armhf.sh /root/rootfs /root/rpi-raspbian.conf
+RUN   /root/init_rootfs_armhf.sh /root/rootfs /root/rpi-raspbian.conf && rm /var/cache/apt/* -R && rm /var/lib/apt/* -R
 
 # WebRTC の取得
 
-ARG WEBRTC_BUILD_VERSION
+# ARG WEBRTC_BUILD_VERSION
 
 COPY script/get_webrtc.sh /root/
 RUN /root/get_webrtc.sh "$WEBRTC_BUILD_VERSION" raspbian-buster_armv6 /root /root
@@ -34,7 +41,7 @@ RUN /root/get_llvm.sh /root/webrtc /root
 
 # Boost のビルド
 
-ARG BOOST_VERSION
+# ARG BOOST_VERSION
 
 COPY script/setup_boost.sh /root/
 RUN \
@@ -70,16 +77,16 @@ RUN \
 
 # nlohmann/json の取得
 
-ARG JSON_VERSION
+# ARG JSON_VERSION
 RUN git clone --branch v$JSON_VERSION --depth 1 https://github.com/nlohmann/json.git /root/json
 
 # CLI11 の取得
 
-ARG CLI11_VERSION
+# ARG CLI11_VERSION
 RUN git clone --branch v$CLI11_VERSION --depth 1 https://github.com/CLIUtils/CLI11.git /root/CLI11
 
 # CMake のインストール
-ARG CMAKE_VERSION
+# ARG CMAKE_VERSION
 COPY script/get_cmake.sh /root/
 RUN /root/get_cmake.sh "$CMAKE_VERSION" Linux /root
 ENV PATH "/root/cmake/bin:$PATH"

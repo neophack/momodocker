@@ -32,8 +32,8 @@ RUN /root/get_webrtc.sh "$WEBRTC_BUILD_VERSION" ubuntu-18.04_x86_64 /root /root
 # コンパイラの取得
 
 COPY script/get_llvm.sh /root/
-COPY 3part/tools/ /root/llvm/tools/
-COPY 3part/libcxx/ /root/llvm/libcxx/
+# COPY 3part/tools/ /root/llvm/tools/
+# COPY 3part/libcxx/ /root/llvm/libcxx/
 RUN /root/get_llvm.sh /root/webrtc /root
 
 # Boost のビルド
