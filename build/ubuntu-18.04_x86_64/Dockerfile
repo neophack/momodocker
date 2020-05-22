@@ -19,8 +19,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 # パッケージのインストール
 
 COPY script/apt_install_x86_64.sh /root/
-RUN --mount=type=cache,id=$PACKAGE_NAME,target=/var/cache/apt --mount=type=cache,id=$PACKAGE_NAME,target=/var/lib/apt \
-  /root/apt_install_x86_64.sh
+RUN  /root/apt_install_x86_64.sh && rm /var/cache/apt/* -R && rm /var/lib/apt/* -R
 
 # WebRTC の取得
 
