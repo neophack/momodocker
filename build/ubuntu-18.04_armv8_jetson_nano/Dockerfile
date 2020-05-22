@@ -19,13 +19,13 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 # パッケージのインストール
 
 COPY script/apt_install_arm.sh /root/
-RUN  /root/apt_install_arm.sh && rm /var/cache/apt/* -R && rm /var/lib/apt/* -R
+RUN  /root/apt_install_arm.sh && rm /var/lib/apt/* -R
 
 # RootFS の構築
 
 COPY script/init_rootfs_arm64.sh /root/
 COPY arm64.conf /root/
-RUN  /root/init_rootfs_arm64.sh /root/rootfs /root/arm64.conf && rm /var/cache/apt/* -R && rm /var/lib/apt/* -R
+RUN  /root/init_rootfs_arm64.sh /root/rootfs /root/arm64.conf && rm /var/lib/apt/* -R
 
 # 構築した RootFS を Jetson Nano のファイルで上書きする
 
